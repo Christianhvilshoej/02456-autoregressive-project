@@ -86,7 +86,7 @@ def main():
     optim = torch.optim.Adam(TM.parameters(), lr=0.0001)
     loss = nn.CrossEntropyLoss(ignore_index=0)
 
-    epochs = 5
+    epochs = 200
     best_val = 10000
     best_weights = None
 
@@ -137,12 +137,13 @@ def main():
 
         avg_val_loss = total_val_loss / len(test_loader)
         
-        if avg_train_loss < best_val:
+        if avg_val_loss < best_val:
             best_val = avg_val_loss
             best_weights = TM.state_dict()
+            print(f'New best weights found: Epoch {epoch} validation error: {best_val}')
             
 
-        if epoch%10==0:
+        if (epoch%10==0) or (epoch == epochs-1):
             print(f"Epoch {epoch+1}/{epochs} | "
                 f"Train Loss: {avg_train_loss:.4f} | "
                 f"Validation Loss: {avg_val_loss:.4f} |"
