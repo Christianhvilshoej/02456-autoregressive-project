@@ -8,7 +8,9 @@ from torch.utils.data import DataLoader
 from protgen.data import ProteinDataset
 from protgen.data.make_data import IGNORE_INDEX
 
-DATA_DIR = Path(__file__).resolve().parents[3] / "data"
+ROOT = Path(__file__).resolve().parents[3]
+DATA_DIR = ROOT / "data"
+RESULTS_DIR = ROOT / "results"
 
 class MLP(nn.Module):
 
@@ -99,6 +101,6 @@ if __name__ == "__main__":
         train_loss = train_mlp(model, train_loader, optimizer, criterion, device)
         val_loss = test_mlp(model, val_loader, criterion, device)
         print(f"Epoch {epoch+1}/{n_epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}")
-    
-    torch.save(model.state_dict(), DATA_DIR.parent / "results" / "mlp.pt")
+    RESULTS_DIR.mkdir(exist_ok=True)
+    torch.save(model.state_dict(), RESULTS_DIR / "mlp.pt")
 
