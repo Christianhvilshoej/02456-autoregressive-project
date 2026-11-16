@@ -1,37 +1,14 @@
-import torch
-from torch import nn
-import torch.nn.functional as F
-import torch.nn.init as init
-from torch.nn.parameter import Parameter
+from pathlib import Path
 
-from protgen.data import ProteinDataset
+import torch
+import torch.nn.functional as F
+from torch import nn
 from torch.utils.data import DataLoader
 
-from protgen.data.make_data import IGNORE_INDEX 
+from protgen.data import ProteinDataset
+from protgen.data.make_data import IGNORE_INDEX
 
-from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parents[3] / "data"
-
-
-train_data = ProteinDataset(path_to_data=DATA_DIR / "train.csv")
-val_data = ProteinDataset(path_to_data=DATA_DIR / "val.csv")
-test_data = ProteinDataset(path_to_data=DATA_DIR / "test.csv")
-
-print(f"Data class: {train_data}")
-
-# Get tensors
-X_train = train_data.tokens
-y_train_shifted = train_data.tokens_shifted # generative task
-
-criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_INDEX)  # ignore padding index
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
-val_loader = DataLoader(val_data, batch_size=32, shuffle=False)
-test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
-
-n_epochs = 10
-
 
 class MLP(nn.Module):
 
@@ -93,9 +70,6 @@ def make_windows(x, x_shifted, k):
     context = context.reshape(-1, k)
     target = target.reshape(-1)
     return context, target
-
-model = MLP().to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 
 if __name__ == "__main__":
