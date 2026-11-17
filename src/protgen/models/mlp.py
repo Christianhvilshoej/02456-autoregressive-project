@@ -99,9 +99,9 @@ if __name__ == "__main__":
     val_loader = DataLoader(val_data, batch_size=32, shuffle=False)
     test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
 
-    n_epochs = 10
+    n_epochs = 50
 
-    model = MLP().to(device)
+    model = MLP(context_size=8).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
     for epoch in range(n_epochs):
