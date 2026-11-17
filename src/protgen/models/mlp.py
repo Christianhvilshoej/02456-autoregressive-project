@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import torch
+from torch.nn import init
 import torch.nn.functional as F
 from torch import nn
 from torch.utils.data import DataLoader
@@ -14,25 +15,31 @@ RESULTS_DIR = ROOT / "results"
 
 class MLP(nn.Module):
 
-    def __init__(self, vocab_size=23, context_size=3, embed_dim=32, num_hidden=256):
+    def __init__(self, vocab_size=23, context_size=3, embed_dim=8, num_hidden=64):
         super(MLP, self).__init__()  
         self.context_size = context_size
         self.embed = nn.Embedding(vocab_size, embed_dim)
         num_features = context_size * embed_dim
         # input layer L1 + hidden layer H1
-        self.L1 = nn.Linear(num_features, num_hidden)
-        self.H1 = nn.Linear(num_hidden, num_hidden)
+        self.W_1 = nn.Parameter(init.xavier_normal_(torch.Tensor(num_hidden, num_features)))
+        self.b_1 = nn.Parameter(init.constant_(torch.Tensor(num_hidden), 0))
+        # hidden layer
+        self.W_2 = nn.Parameter(init.xavier_normal_(torch.Tensor(num_hidden, num_hidden)))
+        self.b_2 = nn.Parameter(init.constant_(torch.Tensor(num_hidden), 0))
         # output layer O1
-        self.O1 = nn.Linear(num_hidden, vocab_size)
+        self.W_3 = nn.Parameter(init.xavier_normal_(torch.Tensor(vocab_size, num_hidden)))
+        self.b_3 = nn.Parameter(init.constant_(torch.Tensor(vocab_size), 0))
         self.activation = torch.nn.ELU()
+        self.activation_output = torch.nn.LogSoftmax(dim=-1)
 
     def forward(self, context):
         x = self.embed(context).flatten(1)
-        x = self.L1(x)
+        x = F.linear(x, self.W_1, self.b_1)
         x = self.activation(x)
-        x = self.H1(x)
+        x = F.linear(x, self.W_2, self.b_2)
         x = self.activation(x)
-        x = self.O1(x)
+        x = F.linear(x, self.W_3, self.b_3)
+        x = self.activation_output(x)
         return x
 
     def count_parameters(self):
@@ -85,7 +92,7 @@ if __name__ == "__main__":
     X_train = train_data.tokens
     y_train_shifted = train_data.tokens_shifted # generative task
 
-    criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_INDEX)  # ignore padding index
+    criterion = nn.NLLLoss(ignore_index=IGNORE_INDEX)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
