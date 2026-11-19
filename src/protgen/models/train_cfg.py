@@ -69,8 +69,8 @@ def generate(model, device, family, ws, n, seed):
         seqs = sample(model, label, w, n, device)
         path = SEQUENCES / f"{name}.csv"
         pd.DataFrame({"sequence": seqs,
-                      "family": family,
-                      "setting": "null" if null else f"w={w:g}",
+                      "family": "uncond" if null else family,
+                      "setting": "uncond" if null else f"w={w:g}",
                       "lambda_equiv": 0.0 if null else 1 + w}).to_csv(path, index=False)
         print(f"{path}  n={len(seqs)}  mean length {sum(map(len, seqs)) / len(seqs):.1f}")
 

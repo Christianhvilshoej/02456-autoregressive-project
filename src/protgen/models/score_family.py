@@ -59,7 +59,7 @@ def main():
         print(f"{path.stem:22s} n={rows[-1]['n']:4d} "
               f"frac={rows[-1]['frac_target']:.3f} mean_p={rows[-1]['mean_p_target']:.3f}")
 
-    out = Path("results/eval") / f"family_membership_{args.predictor}.csv"
+    out = Path("results/eval") / f"family_membership_{args.predictor}_{args.target}.csv"
     out.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(rows).to_csv(out, index=False)
     print("\nSaved:", out)
