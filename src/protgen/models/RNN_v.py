@@ -90,3 +90,7 @@ if __name__ == "__main__":
         val = evaluate(model, val_loader, device)
         print(f"epoch {epoch + 1:2d}  train {train_loss / train_count:.4f}  "
               f"val {val['loss']:.4f} nats/token (ppl {val['ppl']:.3f}, acc {val['acc']:.3f})")
+    
+    save_dir = ROOT / "src/protgen/model_weights"
+    save_dir.mkdir(parents=True, exist_ok=True)
+    torch.save(model.state_dict(), save_dir / "rnn.pt")
