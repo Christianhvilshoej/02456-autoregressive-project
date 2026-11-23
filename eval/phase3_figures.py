@@ -5,8 +5,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
-EVAL = Path("results/eval")
-OUT = Path("results/figures")
+EVAL = Path("results/phase3/eval")
+OUT = Path("results/phase3/figures")
 
 # set -> (method, lambda).  lambda = 1 + w for CFG, so both methods share one x-axis.
 SETS = {

@@ -8,8 +8,8 @@ from protgen.data import ProteinDataset
 from protgen.models.cfg_transformer import (FAMILIES, NULL, ConditionalTransformer, sample, warm_start)
 
 PHASE1 = "results/checkpoints/1_2_Transformer_model_trained.pth"
-CHECKPOINT = Path("results/checkpoints/cfg_transformer_best.pt")
-SEQUENCES = Path("results/sequences")
+CHECKPOINT = Path("results/phase3/checkpoints/cfg_transformer_best.pt")
+SEQUENCES = Path("results/phase3/sequences")
 P_DROP = 0.15
 
 

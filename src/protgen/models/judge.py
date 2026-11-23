@@ -8,7 +8,7 @@ from protgen.models.train_CG import load_transformer
 
 PHASE1 = Path("results/checkpoints/1_2_Transformer_model_trained.pth")
 MODEL_CODE = Path("src/protgen/models/1_2_Transformer_train.py")
-CHECKPOINT = Path("results/checkpoints/judge_best.pt")
+CHECKPOINT = Path("results/phase3/checkpoints/judge_best.pt")
 
 
 def prefix_batch(tokens, lengths):

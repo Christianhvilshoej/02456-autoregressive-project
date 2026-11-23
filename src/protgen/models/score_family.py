@@ -10,8 +10,11 @@ from protgen.models.train_CG import load_transformer
 
 PHASE1 = Path("results/checkpoints/1_2_Transformer_model_trained.pth")
 MODEL_CODE = Path("src/protgen/models/1_2_Transformer_train.py")
+# The guiding classifier is Phase 2's; the judge is ours.
 HEADS = {"guide": Path("results/checkpoints/classifier_guidance_best.pt"),
-         "judge": Path("results/checkpoints/judge_best.pt")}
+         "judge": Path("results/phase3/checkpoints/judge_best.pt")}
+SEQUENCES = Path("results/phase3/sequences")
+OUT = Path("results/phase3/eval")
 VOCAB = {residue: i + 3 for i, residue in enumerate(AA)}
 
 
@@ -44,7 +47,7 @@ def main():
 
     paths = [Path(s) for s in args.sets] if args.sets else sorted(
         path for pattern in ("cg_*.csv", "cfg_*.csv", "control_*.csv")
-        for path in Path("results/sequences").glob(pattern))
+        for path in SEQUENCES.glob(pattern))
     target = FAMILIES.index(args.target)
 
     rows = []
@@ -59,7 +62,7 @@ def main():
         print(f"{path.stem:22s} n={rows[-1]['n']:4d} "
               f"frac={rows[-1]['frac_target']:.3f} mean_p={rows[-1]['mean_p_target']:.3f}")
 
-    out = Path("results/eval") / f"family_membership_{args.predictor}_{args.target}.csv"
+    out = OUT / f"family_membership_{args.predictor}_{args.target}.csv"
     out.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(rows).to_csv(out, index=False)
     print("\nSaved:", out)
