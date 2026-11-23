@@ -12,7 +12,6 @@ CHECKPOINT = Path("results/phase3/checkpoints/judge_best.pt")
 
 
 def prefix_batch(tokens, lengths):
-    """BOS + every residue, EOS and padding removed: the view both predictors are trained on."""
     x = tokens[:, :128].clone()
     positions = torch.arange(128, device=tokens.device)[None, :]
     x[positions > lengths[:, None]] = 0
@@ -20,6 +19,7 @@ def prefix_batch(tokens, lengths):
 
 
 class JudgeClassifier(nn.Module):
+
     def __init__(self, transformer):
         super().__init__()
         self.transformer = transformer
@@ -64,7 +64,6 @@ def main():
             optimizer.zero_grad()
             F.cross_entropy(model(prefix_batch(x, lengths), lengths), y).backward()
             optimizer.step()
-
         model.eval()
         correct = total = 0
         with torch.no_grad():

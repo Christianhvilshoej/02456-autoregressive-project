@@ -31,7 +31,6 @@ def train(model, device, epochs):
         total = 0.0
         for x, _, y, _ in train_loader:
             x, y = x.to(device), y.to(device)
-            # Label dropout, resampled every batch, so each protein is seen both ways.
             y = y.masked_fill(torch.rand(y.shape, device=device) < P_DROP, NULL)
             optimizer.zero_grad()
             loss = loss_on(model, x, y)

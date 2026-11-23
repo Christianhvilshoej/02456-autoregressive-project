@@ -7,8 +7,6 @@ import pandas as pd
 
 EVAL = Path("results/phase3/eval")
 OUT = Path("results/phase3/figures")
-
-# set -> (method, lambda).  lambda = 1 + w for CFG, so both methods share one x-axis.
 SETS = {
     "cg_AcyP_lambda0": ("CG", 0.0), "cg_AcyP_lambda0.5": ("CG", 0.5),
     "cg_AcyP_lambda1": ("CG", 1.0), "cg_AcyP_lambda2": ("CG", 2.0),
@@ -37,8 +35,6 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     t = load()
     t.to_csv(OUT / "phase3_table.csv")
-
-    # Figure 1: does guidance work, and what does it cost?
     fig, (a, b) = plt.subplots(1, 2, figsize=(10, 4))
     for method, marker, color in ARMS:
         d = t[t.method == method].sort_values("lam")
@@ -61,8 +57,6 @@ def main():
     fig.tight_layout()
     fig.savefig(OUT / "guidance.png", dpi=200)
     plt.close(fig)
-
-    # Figure 2: the same samples, scored by the guiding classifier vs an independent one.
     fig, ax = plt.subplots(figsize=(6.5, 4))
     for method, marker, color in ARMS:
         d = t[t.method == method].sort_values("lam")

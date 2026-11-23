@@ -10,16 +10,14 @@ from protgen.models.train_CG import load_transformer
 
 PHASE1 = Path("results/checkpoints/1_2_Transformer_model_trained.pth")
 MODEL_CODE = Path("src/protgen/models/1_2_Transformer_train.py")
-# The guiding classifier is Phase 2's; the judge is ours.
-HEADS = {"guide": Path("results/checkpoints/classifier_guidance_best.pt"),
-         "judge": Path("results/phase3/checkpoints/judge_best.pt")}
+HEADS = {"guide": Path("results/checkpoints/classifier_guidance_best.pt"),"judge": Path("results/phase3/checkpoints/judge_best.pt")}
 SEQUENCES = Path("results/phase3/sequences")
 OUT = Path("results/phase3/eval")
 VOCAB = {residue: i + 3 for i, residue in enumerate(AA)}
 
 
 def encode(sequences, device):
-    """BOS + residues, zero-padded to 128: the view both predictors were trained on."""
+
     tokens = torch.zeros(len(sequences), 128, dtype=torch.long)
     lengths = torch.zeros(len(sequences), dtype=torch.long)
     for i, sequence in enumerate(sequences):
